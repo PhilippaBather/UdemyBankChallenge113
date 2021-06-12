@@ -86,14 +86,12 @@ public class Menu {
     private static void addNewBranch() {
         System.out.println("Enter branch name:");
         String newBranch = scanner.nextLine().toUpperCase();
-        // check for duplications
-        boolean isBranch = bank.searchBranches(newBranch);
-            if(isBranch) {
-                System.out.println("Branch already exists: unable to create new branch of name " + newBranch);
-            } else {
-                Branch branch = Branch.createBranchObject(newBranch);
-                bank.addBranch(branch);
-            }
+        boolean isBranch = bank.addBranch(newBranch);
+        if (isBranch) {
+            System.out.println("Branch " + newBranch + " successfully added.");
+        } else {
+            System.out.println("Branch already exists: unable to create new branch of name " + newBranch + ".");
+        }
     }
 
     /**
@@ -104,23 +102,21 @@ public class Menu {
         // obtain branch name
         System.out.println("Enter branch name:");
         String branch = scanner.nextLine().toUpperCase();
-        // check branch exists
+        // check branch exists: if exists attempt to add customer
         boolean isBranch = bank.searchBranches(branch);
         if (isBranch) {
             System.out.println("Enter customer name:");
             String name = scanner.nextLine().toUpperCase();
             System.out.println("Enter initial deposit:");
             double deposit = validateDouble();
-            Customer customer = Customer.createCustomer(name, deposit);
-            // check customer is not a duplicate
-            boolean isCustomerDuplicate = bank.searchCustomers(branch, name);
-            if (!isCustomerDuplicate) {
-                bank.addCustomerToBranch(branch, customer);
-                System.out.println("Customer added");
+            // add customer and notify user if update successful
+            boolean isCustomer = bank.addCustomerToBranch(branch, name, deposit);
+            if (isCustomer) {
+                System.out.println("Customer added.");
             } else {
                 System.out.println("Customer already exists; customer not added.");
             }
-        } else {
+        } else {  // notify user if branch does not exist
             System.out.println("Branch not found.");
         }
     }
@@ -161,12 +157,8 @@ public class Menu {
     private static void printBranchCustomers() {
         System.out.println("Enter branch name:");
         String branch = scanner.nextLine().toUpperCase();
-        // check branch exists
-        boolean isBranch = bank.searchBranches(branch);
-        // if branch exists, print all customers; else notify user that branch does not exist
-        if (isBranch) {
-            bank.printBranchCustomers(branch);
-        } else {
+        boolean isBranch = bank.printBranchCustomers(branch);
+        if (!isBranch) {  // notify user if branch does not exist
             System.out.println("Branch " + branch + " not found.");
         }
     }
@@ -178,13 +170,8 @@ public class Menu {
     private static void printBranchCustomersAndTransactions() {
         System.out.println("Enter branch name:");
         String branch = scanner.nextLine().toUpperCase();
-        // check branch exists
-        boolean isBranch = bank.searchBranches(branch);
-        // if branch exists, print all customers; else notify user that branch does not exist
-        if (isBranch) {
-            System.out.println("****Branch " + branch + "*****");
-            bank.printBranchCustomersAndTransactions(branch);
-        } else {
+        boolean isBranch = bank.printBranchCustomersAndTransactions(branch);
+        if (!isBranch) {  // notify user if branch does not exist
             System.out.println("Branch " + branch + " not found.");
         }
     }

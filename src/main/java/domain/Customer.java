@@ -6,13 +6,13 @@ public class Customer {
 
     // instance fields
     private final String name;
-    ArrayList<Double> transactionArrayList;
+    private final ArrayList<Double> transactionArrayList;
 
     // constructor
     public Customer(String name, double deposit) {
         this.name = name;
         this.transactionArrayList = new ArrayList<>();
-        this.transactionArrayList.add(deposit);
+        addTransaction(deposit);
     }
 
     // getters and setters
@@ -21,15 +21,8 @@ public class Customer {
         return name;
     }
 
-    /**
-     * Factory / convenience method: accessible within Menu without creating customer object.
-     * Invokes Customer constructor.
-     * @param name of customer
-     * @param deposit initial transaction / opening deposit
-     * @return Customer object
-     */
-    public static Customer createCustomer(String name, double deposit) {
-        return new Customer(name, deposit);
+    public void addTransaction(double deposit) {
+        this.transactionArrayList.add(deposit);
     }
 
     @Override

@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class Branch {
 
     // instance fields
-    String name;
-    ArrayList<Customer> branchArrayList;
+    private final String name;
+    private final ArrayList<Customer> customers;
 
     // constructor
 
     public Branch(String name) {
         this.name = name;
-        this.branchArrayList = new ArrayList<>();
+        this.customers = new ArrayList<>();
     }
 
     // getters and setters
@@ -21,33 +21,24 @@ public class Branch {
         return name;
     }
 
-
     // methods
 
     /**
-     * Factory / convenience method: accessible within Menu without creating a branch object.
-     * @return Branch object
+     * Creates a new customer object and adds this to the customer list of a given branch.A
+     * @param newCustomer specified by user
+     * @param deposit specified by user
      */
-    public static Branch createBranchObject(String name) {
-        return new Branch(name);
-    }
-
-    /**
-     * Adds a new customer and initial transaction amount to the list of customers
-     * within the branch.
-     * @param customer new customer object
-     */
-    public void addCustomerObject(Customer customer) {
-        this.branchArrayList.add(customer);
+    public void addCustomer(String newCustomer, double deposit) {
+        this.customers.add(new Customer(newCustomer, deposit));
     }
 
     public void addTransaction(String customerName, double deposit) {
         // get index value pertaining to customer object
         int index = getIndexValue(customerName);
         // if customer exists
-        if (index != -1){
-            // update object pertaining to that customer object
-            branchArrayList.get(index).transactionArrayList.add(deposit);
+        if (index != -1) {
+            // update customer object calling method within Customer class
+            this.customers.get(index).addTransaction(deposit);
         }
     }
 
@@ -58,10 +49,7 @@ public class Branch {
      */
     public boolean searchCustomers(String name) {
         int index = getIndexValue(name);
-        if (index != -1) {
-            return true;
-        }
-        return false;
+        return index != -1;
     }
 
     /**
@@ -69,7 +57,7 @@ public class Branch {
      */
     public void printCustomers() {
         for (Customer customer:
-             branchArrayList) {
+                this.customers) {
             System.out.println(customer.getName());
         }
     }
@@ -80,7 +68,7 @@ public class Branch {
      */
     public void printCustomersTransactions() {
         for (Customer customer:
-             branchArrayList) {
+                this.customers) {
             System.out.println(customer);
         }
     }
@@ -92,9 +80,9 @@ public class Branch {
      */
     private int getIndexValue(String customerName) {
         for (Customer customer:
-                branchArrayList) {
+                this.customers) {
             if (customer.getName().equals(customerName)) {
-                return branchArrayList.indexOf(customer);
+                return this.customers.indexOf(customer);
             }
         }
         return -1;
