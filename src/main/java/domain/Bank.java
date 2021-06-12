@@ -5,30 +5,41 @@ import java.util.ArrayList;
 public class Bank {
 
     // instance fields
-    ArrayList<Branch> bankArrayList;
+    private final ArrayList<Branch> branches;
 
     // constructor
     public Bank() {
-        bankArrayList = new ArrayList<>();
+        this.branches = new ArrayList<>();
     }
 
     // methods
 
     /**
-     * Adds a new branch.
+     * Adds a new branch provided the new branch name is not already in branches array list.
      */
-    public void addBranch(Branch branch) {
-        bankArrayList.add(branch);
+    public boolean addBranch(String newBranch) {
+        int index = getBranchIndex(newBranch);
+        if (index == -1) {
+            Branch branch = new Branch(newBranch);
+            this.branches.add(branch);
+            return true;
+        }
+        return false;
     }
 
     /**
      * Add a customer with an initial transaction to a given branch.
      */
-    public void addCustomerToBranch(String branchName, Customer customer) {
+    public boolean addCustomerToBranch(String branchName, String newCustomer, double deposit) {
         // get index of branch object in array
         int index = getBranchIndex(branchName);
-        // add customer to branch object
-        bankArrayList.get(index).addCustomerObject(customer);
+        // check customer exists
+        boolean isCustomer = this.branches.get(index).searchCustomers(newCustomer);
+        if (!isCustomer) {  // add customer to branch object
+            this.branches.get(index).addCustomer(newCustomer, deposit);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -36,39 +47,44 @@ public class Bank {
      * @param branchName specified by user
      * @param customerName specified by user
      * @param deposit specified by user
-     * @return boolean transaction successful
      */
     public void addTransaction(String branchName, String customerName, double deposit) {
         // get index value of branch object in bank array list
         int branchIndex = getBranchIndex(branchName);
         // if branch exist, update transaction history for specified customer
         if (branchIndex != -1) {
-            bankArrayList.get(branchIndex).addTransaction(customerName, deposit);
+            this.branches.get(branchIndex).addTransaction(customerName, deposit);
         }
     }
 
     /**
-     * Prints to the console a list of customers of a specified branch.
-     * @param branchName name of specified branch
+     * Prints to console the customers of a given branch.  Returns a boolean to indicate
+     * whether or not branch exists for user notification.
+     * @param branch specified by user
+     * @return boolean is branch
      */
-    public void printBranchCustomers(String branchName) {
-        int index = getBranchIndex(branchName);
-        System.out.println("\n*****\tCustomers at Branch " + branchName + "\t*****");
+    public boolean printBranchCustomers(String branch) {
+        int index = getBranchIndex(branch);
+        System.out.println("\n*****\tCustomers at Branch " + branch + "\t*****");
         if (index != -1) {
-            bankArrayList.get(index).printCustomers();
+            this.branches.get(index).printCustomers();
+            return true;
         }
+        return false;
     }
 
     /**
      * Prints all customers and their transactions of a specified branch.
-     * @param branchName specified by user
+     * @param branch specified by user
      */
-    public void printBranchCustomersAndTransactions(String branchName) {
-        int index = getBranchIndex(branchName);
-        System.out.println("\n*****\tCustomers and Transactions at Branch " + branchName + "\t*****");
+    public boolean printBranchCustomersAndTransactions(String branch) {
+        int index = getBranchIndex(branch);
+        System.out.println("\n*****\tCustomers and Transactions at Branch " + branch + "\t*****");
         if (index != -1) {
-            bankArrayList.get(index).printCustomersTransactions();
+            this.branches.get(index).printCustomersTransactions();
+            return true;
         }
+        return false;
     }
 
     /**
@@ -76,7 +92,7 @@ public class Bank {
      */
     public void printAllBranches() {
         System.out.println("\n*****\tBRANCHES\t*****");
-        for (Branch branch : bankArrayList) {
+        for (Branch branch : this.branches) {
             System.out.println("Branch : " + branch.getName());
         }
     }
@@ -95,7 +111,7 @@ public class Bank {
     }
 
     /**
-     * Search to see if a customer exists.
+     * Searches to see if a customer exists.
      * @param branchName to which customer belongs
      * @param customerName customer's name
      * @return boolean is customer
@@ -103,7 +119,7 @@ public class Bank {
     public boolean searchCustomers(String branchName, String customerName) {
         int branchIndex = getBranchIndex(branchName);
         if (branchIndex != -1) {
-            return bankArrayList.get(branchIndex).searchCustomers(customerName);
+            return this.branches.get(branchIndex).searchCustomers(customerName);
         }
         return false;
     }
@@ -116,9 +132,9 @@ public class Bank {
     */
     private int getBranchIndex(String branchName) {
         int index = -1;
-        for (Branch branch : bankArrayList) {
+        for (Branch branch : this.branches) {
             if (branch.getName().equals(branchName)) {
-                index = bankArrayList.indexOf(branch);
+                index = this.branches.indexOf(branch);
                 return index;
             }
         }
