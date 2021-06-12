@@ -135,13 +135,11 @@ public class Menu {
             // obtain customer name
             System.out.println("Enter customer name:");
             String name = scanner.nextLine().toUpperCase();
-            // check customer on file
-            boolean isCustomer = bank.searchCustomers(branch, name);
+            // obtain deposit to be registered as next transaction
+            System.out.println("Enter deposit sum:");
+            double deposit = validateDouble();
+            boolean isCustomer = bank.addTransaction(branch, name, deposit);
             if (isCustomer) {
-                // obtain deposit to be registered as next transaction
-                System.out.println("Enter deposit sum:");
-                double deposit = validateDouble();
-                bank.addTransaction(branch, name, deposit);
                 System.out.println("Transactions updated.");
             } else {
                 System.out.println("Customer " + name + " does not exist; unable to process request.");

@@ -48,13 +48,18 @@ public class Bank {
      * @param customerName specified by user
      * @param deposit specified by user
      */
-    public void addTransaction(String branchName, String customerName, double deposit) {
+    public boolean addTransaction(String branchName, String customerName, double deposit) {
         // get index value of branch object in bank array list
         int branchIndex = getBranchIndex(branchName);
         // if branch exist, update transaction history for specified customer
         if (branchIndex != -1) {
-            this.branches.get(branchIndex).addTransaction(customerName, deposit);
+            boolean isCustomer = searchCustomers(branchName, customerName);
+            if (isCustomer) {
+                this.branches.get(branchIndex).addTransaction(customerName, deposit);
+                return true;
+            }
         }
+        return false;
     }
 
     /**
@@ -116,7 +121,7 @@ public class Bank {
      * @param customerName customer's name
      * @return boolean is customer
      */
-    public boolean searchCustomers(String branchName, String customerName) {
+    private boolean searchCustomers(String branchName, String customerName) {
         int branchIndex = getBranchIndex(branchName);
         if (branchIndex != -1) {
             return this.branches.get(branchIndex).searchCustomers(customerName);
